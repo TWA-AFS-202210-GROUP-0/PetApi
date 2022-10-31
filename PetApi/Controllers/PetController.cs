@@ -34,5 +34,12 @@ namespace PetApi.Controllers
         {
             pets.Clear();
         }
+
+        [HttpDelete("deletePetByName")]
+        public bool DeletePetByName([FromQuery] string name)
+        {
+            Pet pet = pets.Find(_ => _.Name == name);
+            return pets.Remove(pet);
+        }
     }
 }
