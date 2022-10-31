@@ -50,5 +50,11 @@ namespace PetApi.Controllers
             pets.Add(pet);
             return pet;
         }
+
+        [HttpGet("getPetsByType")]
+        public List<Pet> GetPetsByType([FromQuery] string type)
+        {
+            return pets.FindAll(_ => _.Type == type);
+        }
     }
 }
