@@ -63,5 +63,11 @@ namespace PetApi.Controllers
         {
             return pets.OrderBy(x => x.Price).ToList();
         }
+
+        [HttpGet("getPetsByColor")]
+        public List<Pet> GetPetsByColor([FromQuery] string color)
+        {
+            return pets.FindAll(_ => _.Color == color);
+        }
     }
 }
