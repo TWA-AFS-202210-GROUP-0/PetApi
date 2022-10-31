@@ -52,6 +52,12 @@ namespace PetApi.Controllers
             return pets.FindAll(_ => _.Type == type);
         }
 
+        [HttpGet("findPetsByPriceRange")]
+        public List<Pet> FindPetsByPriceRange(int minPrice, int maxPrice)
+        {
+            return pets.FindAll(_ => _.Price >= minPrice && _.Price <= maxPrice);
+        }
+
         [HttpDelete("deleteAllPets")]
         public void DeleteAllPets()
         {
