@@ -1,5 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace PetApi.Controllers
 {
@@ -32,6 +37,20 @@ namespace PetApi.Controllers
         public void DeleteAllPets()
         {
             Pets.Clear();
+        }
+
+        [HttpDelete("deletePetByName")]
+        public void DeletePetByName([FromQuery] string name)
+        {
+            Pets.RemoveAll(p => p.Name.Equals(name));
+        }
+
+        [HttpPatch("upatePetPrice")]
+        public List<Pet> UpatePetByName([FromBody] Pet pet)
+        {
+            var res = Pets.FirstOrDefault(n => n.Name == pet.Name);
+            res.Price = pet.Price;
+            return Pets;
         }
     }
 }

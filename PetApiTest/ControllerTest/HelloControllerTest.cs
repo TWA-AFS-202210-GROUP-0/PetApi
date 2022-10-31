@@ -3,7 +3,9 @@ using Microsoft.VisualStudio.TestPlatform.TestHost;
 using Newtonsoft.Json;
 using PetApi;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Net.Http.Json;
+using System.Text;
 using Xunit;
 
 namespace PetApiTest.ControllerTest;
@@ -64,5 +66,47 @@ public class HelloControllerTest
         var resPet = JsonConvert.DeserializeObject<Pet>(responseBody);
         response.EnsureSuccessStatusCode();
         Assert.Equal(resPet, pet);
+    }
+
+    [Fact]
+    public async void Should_delete_pet_by_name()
+    {
+        // given
+        var application = new WebApplicationFactory<Program>();
+        var client = application.CreateClient();
+        await client.DeleteAsync("api/deleteAllPets");
+
+        await client.PostAsJsonAsync("api/addNewPet", new Pet(name: "Kitty", type: "cat", color: "white", price: 100));
+        await client.PostAsJsonAsync("api/addNewPet", new Pet(name: "ab", type: "cat", color: "white", price: 100));
+        await client.DeleteAsync("api/deletePetByName?name=Kitty");
+
+        // when
+        var response = await client.GetAsync("api/getPetByName?name=Kitty");
+
+        // then
+        Assert.Equal(System.Net.HttpStatusCode.NoContent, response.StatusCode);
+    }
+
+    [Fact]
+    public async void Should_modify_pet_price_by_name()
+    {
+        // given
+        var application = new WebApplicationFactory<Program>();
+        var client = application.CreateClient();
+        await client.DeleteAsync("api/deleteAllPets");
+
+        var pet = new Pet(name: "Kitty", type: "cat", color: "white", price: 100);
+        await client.PostAsJsonAsync("api/addNewPet", pet);
+        pet.Price = 200;
+        var serializedPet = JsonConvert.SerializeObject(pet);
+        var requestContent = new StringContent(serializedPet, Encoding.UTF8, "application/json");
+        // when
+        var response = await client.PatchAsync("api/upatePetPrice", requestContent);
+
+        // then
+        response.EnsureSuccessStatusCode();
+        var responseBody = response.Content.ReadAsStringAsync().Result;
+        var allPets = JsonConvert.DeserializeObject<List<Pet>>(responseBody);
+        Assert.Equal(200, allPets[0].Price);
     }
 }
