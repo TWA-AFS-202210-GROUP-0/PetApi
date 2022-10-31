@@ -29,5 +29,28 @@ namespace PetApi.Controllers
         {
             return pets.Find(_ => _.Name == name);
         }
+
+        [HttpDelete("deletePetByName")]
+        public bool DeletePetByName([FromQuery] string name)
+        {
+            Pet deletePet = pets.Find(_ => _.Name == name);
+            return pets.Remove(deletePet);
+            
+        }
+
+        [HttpPut("modifyPetPrice")]
+        public Pet ModifyPetByPrice(Pet pet)
+        {
+            var currentPet = pets.Find(_ => _.Name == pet.Name);
+            currentPet.Price = pet.Price;
+            return currentPet;
+
+        }
+
+        [HttpDelete("deleteAllPets")]
+        public void DeleteAllPets()
+        {
+            pets.Clear();
+        }
     }
 }
