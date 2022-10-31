@@ -44,7 +44,12 @@ namespace PetApi.Controllers
             var currentPet = pets.Find(_ => _.Name == pet.Name);
             currentPet.Price = pet.Price;
             return currentPet;
+        }
 
+        [HttpGet("findPetsByType")]
+        public List<Pet> FindPetsByType(string type)
+        {
+            return pets.FindAll(_ => _.Type == type);
         }
 
         [HttpDelete("deleteAllPets")]

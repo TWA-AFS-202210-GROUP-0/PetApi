@@ -121,4 +121,28 @@ public class PetControllerTest
         var modifiedPet = JsonConvert.DeserializeObject<Pet>(responseBody);
         Assert.Equal(5000, modifiedPet.Price);
     }
+
+    [Fact]
+    public async void Should_find_pet_by_type_from_system_successfully()
+    {
+        //given
+        var application = new WebApplicationFactory<Program>();
+        var httpClient = application.CreateClient();
+        await httpClient.DeleteAsync("/api/deleteAllPets");
+        var pet1 = new Pet(name: "Kitty", type: "cat", color: "white", price: 1000);
+        var serializeObject = JsonConvert.SerializeObject(pet1);
+        var postBody = new StringContent(serializeObject, Encoding.UTF8, "application/json");
+        await httpClient.PostAsync("/api/addNewPet", postBody);
+        var pet2 = new Pet(name: "WangCai", type: "dog", color: "white", price: 5000);
+        var serializeObject2 = JsonConvert.SerializeObject(pet2);
+        var postBody2 = new StringContent(serializeObject2, Encoding.UTF8, "application/json");
+        await httpClient.PostAsync("/api/addNewPet", postBody2);
+        //when
+        var response = await httpClient.GetAsync("/api/findPetsByType?type=dog");
+        //then
+        response.EnsureSuccessStatusCode();
+        var responseBody = await response.Content.ReadAsStringAsync();
+        var petsTypeDog = JsonConvert.DeserializeObject<List<Pet>>(responseBody);
+        Assert.Equal(new List<Pet>() { pet2 }, petsTypeDog);
+    }
 }
