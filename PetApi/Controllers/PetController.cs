@@ -28,6 +28,12 @@ namespace PetApi.Controllers
             return pets.Find(pet => pet.Name == name);
         }
 
+        [HttpGet("findPetByColor")]
+        public List<Pet> FindGetByColor([FromQuery] string color)
+        {
+            return pets.FindAll(pet => pet.Color == color);
+        }
+
         [HttpGet("findPetByType")]
         public List<Pet> FindGetByType([FromQuery] string type)
         {

@@ -192,7 +192,7 @@ public class PetControllerTest
         await httpClient.PostAsync("api/addNewPet", postBodytwo);
         await httpClient.PostAsync("api/addNewPet", postBodythree);
         //when
-        var response = await httpClient.GetAsync("/api/findPetByPriceRange?color=white");
+        var response = await httpClient.GetAsync("/api/findPetByColor?color=white");
         //then
         response.EnsureSuccessStatusCode();
         var responseBody = await response.Content.ReadAsStringAsync();
