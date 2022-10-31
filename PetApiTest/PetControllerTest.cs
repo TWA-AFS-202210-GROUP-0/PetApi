@@ -213,5 +213,43 @@ namespace PetApiTest
             Assert.Equal(pet, editedPet[0]);
             Assert.Equal(pet1, editedPet[1]);
         }
+
+        [Fact]
+        public async Task Should_get_pets_sort_by_price()
+        {
+            // given
+            var application = new WebApplicationFactory<Program>();
+            var httpClient = application.CreateClient();
+            await httpClient.DeleteAsync("/api/deleteAllPets");
+            /*
+             * Method: POST
+             * URI: /api/addNewPet
+             * Body:
+             * {
+             *      "name": "Kitty",
+             *      "type": "",
+             *      "color": "white",
+             *      "price": 1000
+             * }
+             */
+            var pet = new Pet(name: "Kitty", type: "cat", color: "white", price: 1000);
+            var serializeObject = JsonConvert.SerializeObject(pet);
+            var postBody = new StringContent(serializeObject, Encoding.UTF8, "application/json");
+            await httpClient.PostAsync("/api/addNewPet", postBody);
+
+            var pet1 = new Pet(name: "Mm", type: "cat", color: "white", price: 2000);
+            var serializeObject1 = JsonConvert.SerializeObject(pet1);
+            var postBody1 = new StringContent(serializeObject1, Encoding.UTF8, "application/json");
+            await httpClient.PostAsync("/api/addNewPet", postBody1);
+
+            // when
+            var response = await httpClient.GetAsync("/api/getPetsSortByPrice");
+            //then
+            response.EnsureSuccessStatusCode();
+            var responseBody = await response.Content.ReadAsStringAsync();
+            var editedPet = JsonConvert.DeserializeObject<List<Pet>>(responseBody);
+            Assert.Equal(pet, editedPet[0]);
+            Assert.Equal(pet1, editedPet[1]);
+        }
     }
 }

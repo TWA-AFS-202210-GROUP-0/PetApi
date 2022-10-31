@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using PetApi.Models;
 
@@ -55,6 +56,12 @@ namespace PetApi.Controllers
         public List<Pet> GetPetsByType([FromQuery] string type)
         {
             return pets.FindAll(_ => _.Type == type);
+        }
+
+        [HttpGet("getPetsSortByPrice")]
+        public List<Pet> GetPetsSortByPrice()
+        {
+            return pets.OrderBy(x => x.Price).ToList();
         }
     }
 }
