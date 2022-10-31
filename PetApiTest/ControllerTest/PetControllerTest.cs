@@ -79,7 +79,7 @@ public class PetControllerTest
     }
 
     [Fact]
-    public async void Should_get_all_pet_by_name()
+    public async void Should_get_pet_by_name()
     {
         //Given
         var (application, httpClient) = SetUpEnviroment();
@@ -157,6 +157,52 @@ public class PetControllerTest
         var responseBody = await getResponse.Content.ReadAsStringAsync();
         var savedPet = JsonConvert.DeserializeObject<PetDto>(responseBody);
         Assert.Equal(2000, savedPet.Price);
+    }
+
+    [Fact]
+    public async void Should_get_pet_by_type_is_dog()
+    {
+        //Given
+        var (application, httpClient) = SetUpEnviroment();
+
+        var pet = new PetDto()
+        {
+            Name = "Mengyu",
+            Type = "Dog",
+            Color = "Blue",
+            Price = 1000,
+        };
+        var pet2 = new PetDto()
+        {
+            Name = "Yanxi",
+            Type = "Dog",
+            Color = "Black",
+            Price = 1000,
+        };
+        var pet3 = new PetDto()
+        {
+            Name = "Meng",
+            Type = "Cat",
+            Color = "Black",
+            Price = 1000,
+        };
+
+        var postBody = BuildRequestBody(pet);
+        var postBody2 = BuildRequestBody(pet2);
+        var postBody3 = BuildRequestBody(pet3);
+        var postResponse = await httpClient.PostAsync("/api/addNewPet", postBody);
+        _ = await httpClient.PostAsync("/api/addNewPet", postBody2);
+        _ = await httpClient.PostAsync("/api/addNewPet", postBody3);
+        //When
+        var getResponse = await httpClient.GetAsync("/api/getPetsByType?type=Dog");
+
+        //Then
+        getResponse.EnsureSuccessStatusCode();
+        var responseBody = await getResponse.Content.ReadAsStringAsync();
+        var savedPet = JsonConvert.DeserializeObject<List<PetDto>>(responseBody);
+        Assert.Equal(2, savedPet.Count);
+        Assert.Equal("Dog", savedPet[0].Type);
+        Assert.Equal("Dog", savedPet[1].Type);
     }
 
 }
