@@ -41,6 +41,22 @@ namespace PetApi.Controllers
             return pet;
         }
 
+        [HttpDelete("buyPet")]
+        public Pet BuyPet([FromQuery]string name)
+        {
+            var boughtPet = pets.Find(p => p.Name == name);
+            try
+            {
+                pets.Remove(boughtPet);
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+            
+            return boughtPet;
+        }
+
         [HttpDelete("releaseAllPets")]
         public void ReleaseAllPets()
         {
