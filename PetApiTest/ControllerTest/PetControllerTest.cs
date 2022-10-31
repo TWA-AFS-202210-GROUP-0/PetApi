@@ -150,8 +150,13 @@ public class PetControllerTest
             Color = "Blue",
             Price = 2000,
         });
-        var putRespone = await httpClient.PutAsync("api/updatePet", putBody);
-
+        var putRespone = await httpClient.PutAsync("api/changePrice", putBody);
+        //Then
+        var getResponse = await httpClient.GetAsync("/api/findPetByName?name=Mengyu");
+        getResponse.EnsureSuccessStatusCode();
+        var responseBody = await getResponse.Content.ReadAsStringAsync();
+        var savedPet = JsonConvert.DeserializeObject<PetDto>(responseBody);
+        Assert.Equal(2000, savedPet.Price);
     }
 
 }

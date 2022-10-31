@@ -48,9 +48,20 @@ namespace PetApi.Controllers
             return "Pet sold";
         }
 
-        [HttpPut("updatePet")]
-        public PetDto UpdatePet(PetDto pet)
+        [HttpPut("changePrice")]
+        public PetDto ChangePrice(PetDto pet)
         {
+            var petToBeUpdated = pets.FirstOrDefault(e => e.Name == pet.Name);
+            if (petToBeUpdated != null)
+            {
+                petToBeUpdated.Price = pet.Price;
+            }
+            else
+            {
+                pets.Add(pet);
+            }
+
+            return pet;
         }
     }
 }
