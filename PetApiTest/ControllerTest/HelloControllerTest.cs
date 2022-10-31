@@ -15,6 +15,8 @@ public class HelloControllerTest
     {
         var application = new WebApplicationFactory<Program>();
         var client = application.CreateClient();
+        await client.DeleteAsync("api/deleteAllPets");
+
         var pet = new Pet(name: "Kitty", type: "cat", color: "white", price: 100);
 
         var response = await client.PostAsJsonAsync("api/addNewPet", pet);
@@ -30,6 +32,7 @@ public class HelloControllerTest
         // given
         var application = new WebApplicationFactory<Program>();
         var client = application.CreateClient();
+        await client.DeleteAsync("api/deleteAllPets");
         var pet = new Pet(name: "Kitty", type: "cat", color: "white", price: 100);
 
         await client.PostAsJsonAsync("api/addNewPet", pet);
@@ -48,6 +51,8 @@ public class HelloControllerTest
         // given
         var application = new WebApplicationFactory<Program>();
         var client = application.CreateClient();
+        await client.DeleteAsync("api/deleteAllPets");
+
         var pet = new Pet(name: "Kitty", type: "cat", color: "white", price: 100);
 
         await client.PostAsJsonAsync("api/addNewPet", pet);
