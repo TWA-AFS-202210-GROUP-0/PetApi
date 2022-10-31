@@ -30,7 +30,25 @@ namespace PetApi.Controllers
         [HttpGet("getPetByName")]
         public Pet FindPetByName([FromQuery] string name)
         {
-            return Pets.Find(p => p.Name.Equals(name, System.StringComparison.Ordinal));
+            return Pets.Find(p => p.Name.Equals(name, StringComparison.Ordinal));
+        }
+
+        [HttpGet("getPetByType")]
+        public List<Pet> FindPetByType([FromQuery] string type)
+        {
+            return Pets.FindAll(p => p.Type.Equals(type));
+        }
+
+        [HttpGet("getPetByColor")]
+        public List<Pet> FindPetByColor([FromQuery] string color)
+        {
+            return Pets.FindAll(p => p.Color.Equals(color));
+        }
+
+        [HttpGet("getPetByPrice")]
+        public List<Pet> FindPetByPrice([FromQuery] int min, [FromQuery] int max)
+        {
+            return Pets.FindAll(p => p.Price >= min && p.Price <= max);
         }
 
         [HttpDelete("deleteAllPets")]
@@ -46,7 +64,7 @@ namespace PetApi.Controllers
         }
 
         [HttpPatch("upatePetPrice")]
-        public List<Pet> UpatePetByName([FromBody] Pet pet)
+        public List<Pet> UpatePetPrice([FromBody] Pet pet)
         {
             var res = Pets.FirstOrDefault(n => n.Name == pet.Name);
             res.Price = pet.Price;

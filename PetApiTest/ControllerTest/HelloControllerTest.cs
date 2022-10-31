@@ -88,6 +88,67 @@ public class HelloControllerTest
     }
 
     [Fact]
+    public async void Should_find_pet_by_type()
+    {
+        // given
+        var application = new WebApplicationFactory<Program>();
+        var client = application.CreateClient();
+        await client.DeleteAsync("api/deleteAllPets");
+
+        await client.PostAsJsonAsync("api/addNewPet", new Pet(name: "Kitty", type: "cat", color: "white", price: 100));
+        await client.PostAsJsonAsync("api/addNewPet", new Pet(name: "ab", type: "cat", color: "white", price: 100));
+
+        // when
+        var response = await client.GetAsync("api/getPetByType?type=cat");
+
+        // then
+        string responseBody = response.Content.ReadAsStringAsync().Result;
+        var resPet = JsonConvert.DeserializeObject<List<Pet>>(responseBody);
+        Assert.Equal(2, resPet.Count);
+    }
+
+    [Fact]
+    public async void Should_find_pet_by_color()
+    {
+        // given
+        var application = new WebApplicationFactory<Program>();
+        var client = application.CreateClient();
+        await client.DeleteAsync("api/deleteAllPets");
+
+        await client.PostAsJsonAsync("api/addNewPet", new Pet(name: "Kitty", type: "cat", color: "white", price: 100));
+        await client.PostAsJsonAsync("api/addNewPet", new Pet(name: "ab", type: "cat", color: "green", price: 100));
+
+        // when
+        var response = await client.GetAsync("api/getPetByColor?color=white");
+
+        // then
+        string responseBody = response.Content.ReadAsStringAsync().Result;
+        var resPet = JsonConvert.DeserializeObject<List<Pet>>(responseBody);
+        Assert.Equal(1, resPet.Count);
+    }
+
+    [Fact]
+    public async void Should_find_pet_by_price()
+    {
+        // given
+        var application = new WebApplicationFactory<Program>();
+        var client = application.CreateClient();
+        await client.DeleteAsync("api/deleteAllPets");
+
+        var pet = new Pet(name: "ab", type: "cat", color: "green", price: 200);
+        await client.PostAsJsonAsync("api/addNewPet", new Pet(name: "Kitty", type: "cat", color: "white", price: 100));
+        await client.PostAsJsonAsync("api/addNewPet", pet);
+
+        // when
+        var response = await client.GetAsync("api/getPetByPrice?min=150&max=300");
+
+        // then
+        string responseBody = response.Content.ReadAsStringAsync().Result;
+        var resPet = JsonConvert.DeserializeObject<List<Pet>>(responseBody);
+        Assert.Equal(pet, resPet[0]);
+    }
+
+    [Fact]
     public async void Should_modify_pet_price_by_name()
     {
         // given
