@@ -41,5 +41,14 @@ namespace PetApi.Controllers
             Pet pet = pets.Find(_ => _.Name == name);
             return pets.Remove(pet);
         }
+
+        [HttpPut("ModifyPet")]
+        public Pet ModifyPetByName([FromBody] Pet pet)
+        {
+            Pet removePet = pets.Find(_ => _.Name == pet.Name);
+            pets.Remove(removePet);
+            pets.Add(pet);
+            return pet;
+        }
     }
 }

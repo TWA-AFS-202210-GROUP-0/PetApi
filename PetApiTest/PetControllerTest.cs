@@ -140,5 +140,40 @@ namespace PetApiTest
             var deleteResult = JsonConvert.DeserializeObject<bool>(responseBody);
             Assert.Equal(false, deleteResult);
         }
+
+        [Fact]
+        public async Task Should_modify_pet_price_given_pet_name_and_new_price()
+        {
+            // given
+            var application = new WebApplicationFactory<Program>();
+            var httpClient = application.CreateClient();
+            await httpClient.DeleteAsync("/api/deleteAllPets");
+            /*
+             * Method: POST
+             * URI: /api/addNewPet
+             * Body:
+             * {
+             *      "name": "Kitty",
+             *      "type": "",
+             *      "color": "white",
+             *      "price": 1000
+             * }
+             */
+            var pet = new Pet(name: "Kitty", type: "cat", color: "white", price: 1000);
+            var serializeObject = JsonConvert.SerializeObject(pet);
+            var postBody = new StringContent(serializeObject, Encoding.UTF8, "application/json");
+            await httpClient.PostAsync("/api/addNewPet", postBody);
+
+            // when
+            var putPet = new Pet(name: "Kitty", type: "cat", color: "white", price: 10000);
+            var serializeObjectPutPet = JsonConvert.SerializeObject(putPet);
+            var putBody = new StringContent(serializeObjectPutPet, Encoding.UTF8, "application/json");
+            var response = await httpClient.PutAsync("/api/ModifyPet", putBody);
+            //then
+            response.EnsureSuccessStatusCode();
+            var responseBody = await response.Content.ReadAsStringAsync();
+            var editedPet = JsonConvert.DeserializeObject<Pet>(responseBody);
+            Assert.Equal(putPet, editedPet);
+        }
     }
 }
