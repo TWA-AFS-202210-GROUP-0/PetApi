@@ -1,5 +1,8 @@
+using System;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 using System.Linq;
+using Force.DeepCloner;
 using Microsoft.AspNetCore.Mvc;
 using PetApi.Dto;
 
@@ -10,6 +13,7 @@ namespace PetApi.Controllers
     public class PetController : ControllerBase
     {
         static private List<PetDto> pets = new List<PetDto>();
+
         [HttpGet]
         public string Get()
         {
@@ -30,7 +34,7 @@ namespace PetApi.Controllers
         }
 
         [HttpGet("findPetByName")]
-        public PetDto FindPetByName([FromQuery]string name)
+        public PetDto FindPetByName([FromQuery] string name)
         {
             return pets.FirstOrDefault(e => e.Name == name);
         }
@@ -68,6 +72,18 @@ namespace PetApi.Controllers
         public List<PetDto> GetPetsByType([FromQuery] string type)
         {
             return pets.Where(e => e.Type == type).ToList();
+        }
+
+        [HttpGet("getPetsByColor")]
+        public List<PetDto> GetPetsByColor([FromQuery] string color)
+        {
+            return pets.Where(e => e.Color == color).ToList();
+        }
+
+        [HttpGet("getPetsByPrice")]
+        public List<PetDto> GetPetsByColor([FromQuery] double low, double high)
+        {
+            return pets.Where(e => e.Price > low && e.Price < high).ToList();
         }
     }
 }

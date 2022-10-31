@@ -7,10 +7,6 @@
         public string Color { get; set; }
         public double Price { get; set; }
 
-        public PetDto()
-        {
-        }
-
         public override bool Equals(object? obj)
         {
             var pet = obj as PetDto;

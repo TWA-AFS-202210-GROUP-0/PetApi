@@ -205,4 +205,96 @@ public class PetControllerTest
         Assert.Equal("Dog", savedPet[1].Type);
     }
 
+    [Fact]
+    public async void Should_get_pet_by_color_is_Black()
+    {
+        //Given
+        var (application, httpClient) = SetUpEnviroment();
+
+        var pet = new PetDto()
+        {
+            Name = "Mengyu",
+            Type = "Dog",
+            Color = "Blue",
+            Price = 1000,
+        };
+        var pet2 = new PetDto()
+        {
+            Name = "Yanxi",
+            Type = "Dog",
+            Color = "Black",
+            Price = 1000,
+        };
+        var pet3 = new PetDto()
+        {
+            Name = "Meng",
+            Type = "Cat",
+            Color = "Black",
+            Price = 1000,
+        };
+
+        var postBody = BuildRequestBody(pet);
+        var postBody2 = BuildRequestBody(pet2);
+        var postBody3 = BuildRequestBody(pet3);
+        var postResponse = await httpClient.PostAsync("/api/addNewPet", postBody);
+        _ = await httpClient.PostAsync("/api/addNewPet", postBody2);
+        _ = await httpClient.PostAsync("/api/addNewPet", postBody3);
+        //When
+        var getResponse = await httpClient.GetAsync("/api/getPetsByColor?Color=Black");
+
+        //Then
+        getResponse.EnsureSuccessStatusCode();
+        var responseBody = await getResponse.Content.ReadAsStringAsync();
+        var savedPet = JsonConvert.DeserializeObject<List<PetDto>>(responseBody);
+        Assert.Equal(2, savedPet.Count);
+        Assert.Equal("Black", savedPet[0].Color);
+        Assert.Equal("Black", savedPet[1].Color);
+    }
+
+    [Fact]
+    public async void Should_get_pet_by_price()
+    {
+        //Given
+        var (application, httpClient) = SetUpEnviroment();
+
+        var pet = new PetDto()
+        {
+            Name = "Mengyu",
+            Type = "Dog",
+            Color = "Blue",
+            Price = 1000,
+        };
+        var pet2 = new PetDto()
+        {
+            Name = "Yanxi",
+            Type = "Dog",
+            Color = "Black",
+            Price = 1500,
+        };
+        var pet3 = new PetDto()
+        {
+            Name = "Meng",
+            Type = "Cat",
+            Color = "Black",
+            Price = 1500,
+        };
+
+        var postBody = BuildRequestBody(pet);
+        var postBody2 = BuildRequestBody(pet2);
+        var postBody3 = BuildRequestBody(pet3);
+        var postResponse = await httpClient.PostAsync("/api/addNewPet", postBody);
+        _ = await httpClient.PostAsync("/api/addNewPet", postBody2);
+        _ = await httpClient.PostAsync("/api/addNewPet", postBody3);
+        //When
+        var getResponse = await httpClient.GetAsync("/api/getPetsByPrice?low=1000&high=2000");
+
+        //Then
+        getResponse.EnsureSuccessStatusCode();
+        var responseBody = await getResponse.Content.ReadAsStringAsync();
+        var savedPet = JsonConvert.DeserializeObject<List<PetDto>>(responseBody);
+        Assert.Equal(2, savedPet.Count);
+        Assert.Equal(1500, savedPet[0].Price);
+        Assert.Equal(1500, savedPet[1].Price);
+    }
+
 }
