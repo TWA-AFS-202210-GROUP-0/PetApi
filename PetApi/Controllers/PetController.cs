@@ -28,5 +28,11 @@ namespace PetApi.Controllers
         {
             return pets.Find(_ => _.Name == name);
         }
+
+        [HttpDelete("deleteAllPets")]
+        public void DeleteAll()
+        {
+            pets.Clear();
+        }
     }
 }

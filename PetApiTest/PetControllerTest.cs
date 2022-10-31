@@ -17,6 +17,7 @@ namespace PetApiTest
             // given
             var application = new WebApplicationFactory<Program>();
             var httpClient = application.CreateClient();
+            await httpClient.DeleteAsync("/api/deleteAllPets");
             /*
              * Method: POST
              * URI: /api/addNewPet
@@ -47,6 +48,7 @@ namespace PetApiTest
             // given
             var application = new WebApplicationFactory<Program>();
             var httpClient = application.CreateClient();
+            await httpClient.DeleteAsync("/api/deleteAllPets");
             /*
              * Method: POST
              * URI: /api/addNewPet
@@ -79,6 +81,7 @@ namespace PetApiTest
             // given
             var application = new WebApplicationFactory<Program>();
             var httpClient = application.CreateClient();
+            await httpClient.DeleteAsync("/api/deleteAllPets");
             /*
              * Method: POST
              * URI: /api/addNewPet
