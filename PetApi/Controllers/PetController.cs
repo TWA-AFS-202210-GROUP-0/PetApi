@@ -47,5 +47,10 @@ namespace PetApi.Controllers
             pets.RemoveAll(e => e.Name == name);
             return "Pet sold";
         }
+
+        [HttpPut("updatePet")]
+        public PetDto UpdatePet(PetDto pet)
+        {
+        }
     }
 }

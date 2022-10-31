@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Net.Http;
 using System.Text;
 using System.Threading;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.VisualBasic;
 using Newtonsoft.Json;
@@ -124,6 +125,33 @@ public class PetControllerTest
         deleteResponse.EnsureSuccessStatusCode();
         var responseBody = await deleteResponse.Content.ReadAsStringAsync();
         Assert.Equal("Pet sold", responseBody);
+    }
+
+    [Fact]
+    public async void Should_change_price_when_put()
+    {
+        //Given
+        var (application, httpClient) = SetUpEnviroment();
+
+        var pet = new PetDto()
+        {
+            Name = "Mengyu",
+            Type = "Dog",
+            Color = "Blue",
+            Price = 1000,
+        };
+        var postBody = BuildRequestBody(pet);
+        var postResponse = await httpClient.PostAsync("/api/addNewPet", postBody);
+        //When
+        var putBody = BuildRequestBody(new PetDto()
+        {
+            Name = "Mengyu",
+            Type = "Dog",
+            Color = "Blue",
+            Price = 2000,
+        });
+        var putRespone = await httpClient.PutAsync("api/updatePet", putBody);
+
     }
 
 }
