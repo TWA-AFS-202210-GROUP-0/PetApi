@@ -149,4 +149,32 @@ public class PetControllerTest
         var petsByPrinceRange = JsonConvert.DeserializeObject<List<Pet>>(responseBody);
         Assert.Equal(new List<Pet>() { pet1, pet3 }, petsByPrinceRange);
     }
+
+    [Fact]
+    public async void Should_find_pet_by_color_from_system_successfully()
+    {
+        //given
+        var application = new WebApplicationFactory<Program>();
+        var httpClient = application.CreateClient();
+        await httpClient.DeleteAsync("/api/deleteAllPets");
+        var pet1 = new Pet(name: "Kitty", type: "cat", color: "white", price: 1000);
+        var serializeObject1 = JsonConvert.SerializeObject(pet1);
+        var postBody1 = new StringContent(serializeObject1, Encoding.UTF8, "application/json");
+        await httpClient.PostAsync("/api/addNewPet", postBody1);
+        var pet2 = new Pet(name: "WangCai", type: "dog", color: "white", price: 5000);
+        var serializeObject2 = JsonConvert.SerializeObject(pet2);
+        var postBody2 = new StringContent(serializeObject2, Encoding.UTF8, "application/json");
+        await httpClient.PostAsync("/api/addNewPet", postBody2);
+        var pet3 = new Pet(name: "Puppy", type: "dog", color: "black", price: 3000);
+        var serializeObject3 = JsonConvert.SerializeObject(pet3);
+        var postBody3 = new StringContent(serializeObject3, Encoding.UTF8, "application/json");
+        await httpClient.PostAsync("/api/addNewPet", postBody3);
+        //when
+        var response = await httpClient.GetAsync("/api/findPetsByColor?color=white");
+        //then
+        response.EnsureSuccessStatusCode();
+        var responseBody = await response.Content.ReadAsStringAsync();
+        var petsColorWhite = JsonConvert.DeserializeObject<List<Pet>>(responseBody);
+        Assert.Equal(new List<Pet>() { pet1, pet2 }, petsColorWhite);
+    }
 }
