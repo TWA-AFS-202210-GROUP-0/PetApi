@@ -153,14 +153,46 @@ public class PetControllerTest
         var httpClient = application.CreateClient();
         var petOne = new Pet("Kitty", "cat", "white", 1000);
         var petTwo = new Pet("Miao", "cat", "yellow", 2000);
+        var petThree = new Pet("Pao", "cat", "orange", 1200);
         var serializeObjectOne = JsonConvert.SerializeObject(petOne);
         var serializeObjectTwo = JsonConvert.SerializeObject(petTwo);
+        var serializeObjectThree = JsonConvert.SerializeObject(petThree);
         var postBodyone = new StringContent(serializeObjectOne, Encoding.UTF8, "application/json");
         var postBodytwo = new StringContent(serializeObjectTwo, Encoding.UTF8, "application/json");
+        var postBodythree = new StringContent(serializeObjectThree, Encoding.UTF8, "application/json");
         await httpClient.PostAsync("api/addNewPet", postBodyone);
         await httpClient.PostAsync("api/addNewPet", postBodytwo);
+        await httpClient.PostAsync("api/addNewPet", postBodythree);
         //when
         var response = await httpClient.GetAsync("/api/findPetByPriceRange?lower=500&upper=1500");
+        //then
+        response.EnsureSuccessStatusCode();
+        var responseBody = await response.Content.ReadAsStringAsync();
+        var savedPets = JsonConvert.DeserializeObject<List<Pet>>(responseBody);
+        Assert.Equal(2, savedPets.Count);
+        Assert.Equal("Kitty", savedPets[0].Name);
+    }
+
+    [Fact]
+    public async void Should_get_the_pet_by_color_successfully()
+    {
+        //given
+        var application = new WebApplicationFactory<Program>();
+        var httpClient = application.CreateClient();
+        var petOne = new Pet("Kitty", "cat", "white", 1000);
+        var petTwo = new Pet("Miao", "cat", "yellow", 2000);
+        var petThree = new Pet("Pao", "cat", "orange", 1200);
+        var serializeObjectOne = JsonConvert.SerializeObject(petOne);
+        var serializeObjectTwo = JsonConvert.SerializeObject(petTwo);
+        var serializeObjectThree = JsonConvert.SerializeObject(petThree);
+        var postBodyone = new StringContent(serializeObjectOne, Encoding.UTF8, "application/json");
+        var postBodytwo = new StringContent(serializeObjectTwo, Encoding.UTF8, "application/json");
+        var postBodythree = new StringContent(serializeObjectThree, Encoding.UTF8, "application/json");
+        await httpClient.PostAsync("api/addNewPet", postBodyone);
+        await httpClient.PostAsync("api/addNewPet", postBodytwo);
+        await httpClient.PostAsync("api/addNewPet", postBodythree);
+        //when
+        var response = await httpClient.GetAsync("/api/findPetByPriceRange?color=white");
         //then
         response.EnsureSuccessStatusCode();
         var responseBody = await response.Content.ReadAsStringAsync();
