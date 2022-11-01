@@ -2,9 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.Eventing.Reader;
 using System.Linq;
+using System.Reflection.PortableExecutable;
 using Force.DeepCloner;
 using Microsoft.AspNetCore.Mvc;
 using PetApi.Dto;
+using PetApi.Model;
 
 namespace PetApi.Controllers
 {
@@ -14,10 +16,31 @@ namespace PetApi.Controllers
     {
         static private List<PetDto> pets = new List<PetDto>();
 
-        [HttpGet]
-        public string Get()
+        [HttpGet("queryPets/")]
+        public List<PetDto> QueryPets([FromQuery]PetQuery petQuery)
         {
-            return "Hello World";
+            var selectedPets = pets.Select(e => e).ToList();
+            if (petQuery.Type != null)
+            {
+                selectedPets.Where(e => e.Type == petQuery.Type).ToList();
+            }
+
+            if (petQuery.Color != null)
+            {
+                selectedPets.Where(e => e.Color == petQuery.Color).ToList();
+            }
+
+            if (petQuery.Low != null)
+            {
+                selectedPets.Where(e => e.Price > petQuery.Low).ToList();
+            }
+
+            if (petQuery.High != null)
+            {
+                selectedPets.Where(e => e.Price < petQuery.High).ToList();
+            }
+
+            return selectedPets;
         }
 
         [HttpPost("addNewPet")]
@@ -66,24 +89,6 @@ namespace PetApi.Controllers
             }
 
             return pet;
-        }
-
-        [HttpGet("getPetsByType")]
-        public List<PetDto> GetPetsByType([FromQuery] string type)
-        {
-            return pets.Where(e => e.Type == type).ToList();
-        }
-
-        [HttpGet("getPetsByColor")]
-        public List<PetDto> GetPetsByColor([FromQuery] string color)
-        {
-            return pets.Where(e => e.Color == color).ToList();
-        }
-
-        [HttpGet("getPetsByPrice")]
-        public List<PetDto> GetPetsByColor([FromQuery] double low, double high)
-        {
-            return pets.Where(e => e.Price > low && e.Price < high).ToList();
         }
     }
 }

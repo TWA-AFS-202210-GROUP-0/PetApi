@@ -194,7 +194,7 @@ public class PetControllerTest
         _ = await httpClient.PostAsync("/api/addNewPet", postBody2);
         _ = await httpClient.PostAsync("/api/addNewPet", postBody3);
         //When
-        var getResponse = await httpClient.GetAsync("/api/getPetsByType?type=Dog");
+        var getResponse = await httpClient.GetAsync("/api/queryPets?Type=Dog");
 
         //Then
         getResponse.EnsureSuccessStatusCode();
@@ -240,7 +240,7 @@ public class PetControllerTest
         _ = await httpClient.PostAsync("/api/addNewPet", postBody2);
         _ = await httpClient.PostAsync("/api/addNewPet", postBody3);
         //When
-        var getResponse = await httpClient.GetAsync("/api/getPetsByColor?Color=Black");
+        var getResponse = await httpClient.GetAsync("/api/queryPets?Color=Black");
 
         //Then
         getResponse.EnsureSuccessStatusCode();
@@ -286,7 +286,7 @@ public class PetControllerTest
         _ = await httpClient.PostAsync("/api/addNewPet", postBody2);
         _ = await httpClient.PostAsync("/api/addNewPet", postBody3);
         //When
-        var getResponse = await httpClient.GetAsync("/api/getPetsByPrice?low=1000&high=2000");
+        var getResponse = await httpClient.GetAsync("/api/queryPets?Low=1000&High=2000");
 
         //Then
         getResponse.EnsureSuccessStatusCode();
