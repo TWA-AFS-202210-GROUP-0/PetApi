@@ -22,22 +22,22 @@ namespace PetApi.Controllers
             var selectedPets = pets.Select(e => e).ToList();
             if (petQuery.Type != null)
             {
-                selectedPets.Where(e => e.Type == petQuery.Type).ToList();
+                selectedPets = selectedPets.Where(e => e.Type == petQuery.Type).ToList();
             }
 
             if (petQuery.Color != null)
             {
-                selectedPets.Where(e => e.Color == petQuery.Color).ToList();
+                selectedPets = selectedPets.Where(e => e.Color == petQuery.Color).ToList();
             }
 
             if (petQuery.Low != null)
             {
-                selectedPets.Where(e => e.Price > petQuery.Low).ToList();
+                selectedPets = selectedPets.Where(e => e.Price > petQuery.Low).ToList();
             }
 
             if (petQuery.High != null)
             {
-                selectedPets.Where(e => e.Price < petQuery.High).ToList();
+                selectedPets= selectedPets.Where(e => e.Price < petQuery.High).ToList();
             }
 
             return selectedPets;
